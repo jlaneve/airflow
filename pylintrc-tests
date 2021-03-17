@@ -160,7 +160,9 @@ disable=print-statement,
         missing-docstring,
         no-self-use,
         too-many-public-methods,
-        protected-access
+        protected-access,
+        redefined-outer-name, # Gets confused about file-scoped pytest fixtures
+        attribute-defined-outside-init,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -387,7 +389,7 @@ min-similarity-lines=4
 # Regular expression matching correct argument names. Overrides argument-
 # naming-style.
 # BasPH: Kept snake_case but allow for 1-char argument names.
-argument-rgx=[a-z_][a-z0-9_]{0,30}$
+argument-rgx=[a-z_][a-z0-9_]{0,32}$
 
 # Naming style matching correct attribute names.
 attr-naming-style=snake_case

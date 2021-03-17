@@ -45,7 +45,7 @@ fi
 function check_upgrade_to_newer_dependencies_needed() {
     # shellcheck disable=SC2153
     if [[ "${UPGRADE_TO_NEWER_DEPENDENCIES}" != "false" ||
-            ${EVENT_NAME} == 'push' || ${EVENT_NAME} == "scheduled" ]]; then
+            ${GITHUB_EVENT_NAME} == 'push' || ${GITHUB_EVENT_NAME} == "scheduled" ]]; then
         # Trigger upgrading to latest constraints where label is set or when
         # SHA of the merge commit triggers rebuilding layer in the docker image
         # Each build that upgrades to latest constraints will get truly latest constraints, not those
@@ -64,7 +64,7 @@ function output_all_basic_variables() {
     else
         initialization::ga_output python-versions \
             "$(initialization::parameters_to_json "${DEFAULT_PYTHON_MAJOR_MINOR_VERSION}")"
-        # this will work as long as DEFAULT_PYTHON_MAJOR_VERSION is the same master/v1-10
+        # this will work as long as DEFAULT_PYTHON_MAJOR_VERSION is the same on HEAD and v1-10
         # all-python-versions are used in BuildImage Workflow
         initialization::ga_output all-python-versions \
             "$(initialization::parameters_to_json "${DEFAULT_PYTHON_MAJOR_MINOR_VERSION}")"
@@ -199,7 +199,7 @@ function set_upgrade_to_newer_dependencies() {
 }
 
 
-ALL_TESTS="Always Core Other API CLI Providers WWW Integration Heisentests"
+ALL_TESTS="Always Core Other API CLI Providers WWW Integration"
 readonly ALL_TESTS
 
 function set_outputs_run_everything_and_exit() {
@@ -600,7 +600,7 @@ function calculate_test_types_to_run() {
             echo
             SELECTED_TESTS="${SELECTED_TESTS} WWW"
         fi
-        initialization::ga_output test-types "Always Integration Heisentests ${SELECTED_TESTS}"
+        initialization::ga_output test-types "Always Integration ${SELECTED_TESTS}"
     fi
     start_end::group_end
 }
@@ -611,11 +611,11 @@ upgrade_to_newer_dependencies="false"
 
 if (($# < 1)); then
     echo
-    echo "No Commit SHA - running all tests (likely direct master merge, or scheduled run)!"
+    echo "No Commit SHA - running all tests (likely direct merge, or scheduled run)!"
     echo
     INCOMING_COMMIT_SHA=""
     readonly INCOMING_COMMIT_SHA
-    # override FULL_TESTS_NEEDED_LABEL in master/scheduled run
+    # override FULL_TESTS_NEEDED_LABEL in main/scheduled run
     FULL_TESTS_NEEDED_LABEL="true"
     readonly FULL_TESTS_NEEDED_LABEL
     output_all_basic_variables

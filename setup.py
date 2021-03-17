@@ -194,7 +194,7 @@ def get_sphinx_theme_version() -> str:
 # If you change this mark you should also change ./scripts/ci/check_order_setup.py
 # Start dependencies group
 amazon = [
-    'boto3>=1.15.0,<1.16.0',
+    'boto3>=1.15.0,<1.18.0',
     'botocore>=1.18.0,<1.19.0',
     'watchtower~=0.7.3',
 ]
@@ -391,7 +391,7 @@ pinot = [
     'pinotdb>0.1.2,<1.0.0',
 ]
 plexus = [
-    'arrow>=0.16.0',
+    'arrow>=0.16.0,<1.0.0',
 ]
 postgres = [
     'psycopg2-binary>=2.7.4',
@@ -496,7 +496,7 @@ devel = [
     'paramiko',
     'pipdeptree',
     'pre-commit',
-    'pylint',
+    'pylint>=2.7.0',
     'pysftp',
     'pytest~=6.0',
     'pytest-cov',

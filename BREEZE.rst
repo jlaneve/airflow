@@ -157,6 +157,23 @@ If you use zsh, run this command and re-login:
     echo 'export PATH="/usr/local/opt/gnu-getopt/bin:$PATH"' >> ~/.zprofile
     . ~/.zprofile
 
+
+Let's confirm that ``getopt`` and ``gstat`` utilities are successfully installed
+
+.. code-block:: bash
+
+    $ getopt --version
+    getopt from util-linux *
+    $ gstat --version
+    stat (GNU coreutils) *
+    Copyright (C) 2020 Free Software Foundation, Inc.
+    License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.
+
+    Written by Michael Meskes.
+
+
 Memory
 ------
 
@@ -177,7 +194,7 @@ them, you may end up with some unused image data.
 
 To clean up the Docker environment:
 
-1. Stop Breeze with ``./breeze stop``.
+1. Stop Breeze with ``./breeze stop``. (If Breeze is already running)
 
 2. Run the ``docker system prune`` command.
 
@@ -296,7 +313,7 @@ can check whether your problem is fixed.
 
 1. If you are on macOS, check if you have enough disk space for Docker.
 2. Restart Breeze with ``./breeze restart``.
-3. Delete the ``.build`` directory and run ``./breeze build-image --force-pull-images``.
+3. Delete the ``.build`` directory and run ``./breeze build-image``.
 4. Clean up Docker images via ``breeze cleanup-image`` command.
 5. Restart your Docker Engine and try again.
 6. Restart your machine and try again.
@@ -1255,16 +1272,24 @@ This is the current syntax for  `./breeze <./breeze>`_:
   breeze build-image [FLAGS]
 
         Builds docker image (CI or production) without entering the container. You can pass
-        additional options to this command, such as '--force-build-image',
-        '--force-pull-image', '--python', '--build-cache-local' or '-build-cache-pulled'
-        in order to modify build behaviour.
+        additional options to this command, such as:
+
+        Choosing python version:
+          '--python'
+
+        Choosing cache option:
+           '--build-cache-local' or '-build-cache-pulled', or '--build-cache-none'
+
+        Choosing whether to force pull images or force build the image:
+            '--force-build-image',
+             '--force-pull-image', '--force-pull-base-python-image'
 
         You can also pass '--production-image' flag to build production image rather than CI image.
 
-        For DockerHub pull --dockerhub-user and --dockerhub-repo flags can be used to specify
-        the repository to pull from. For GitHub repository, the --github-repository
+        For DockerHub pull. '--dockerhub-user' and '--dockerhub-repo' flags can be used to specify
+        the repository to pull from. For GitHub repository, the '--github-repository'
         flag can be used for the same purpose. You can also use
-        --github-image-id <COMMIT_SHA>|<RUN_ID> in case you want to pull the image with
+        '--github-image-id <COMMIT_SHA>|<RUN_ID>' in case you want to pull the image with
         specific COMMIT_SHA tag or RUN_ID.
 
   Flags:
@@ -1333,6 +1358,13 @@ This is the current syntax for  `./breeze <./breeze>`_:
           Forces pulling of images from DockerHub before building to populate cache. The
           images are pulled by default only for the first time you run the
           environment, later the locally build images are used as cache.
+
+  --force-pull-base-python-image
+          Forces pulling of Python base image from DockerHub before building to
+          populate cache. This should only be run in case we need to update to latest available
+          Python base image. This should be a rare and manually triggered event. Also this flag
+          is used in the scheduled run in CI when we rebuild all the images from the scratch
+          and run the tests to see if the latest python images do not fail our tests.
 
   Customization options:
 
@@ -1982,6 +2014,13 @@ This is the current syntax for  `./breeze <./breeze>`_:
           images are pulled by default only for the first time you run the
           environment, later the locally build images are used as cache.
 
+  --force-pull-base-python-image
+          Forces pulling of Python base image from DockerHub before building to
+          populate cache. This should only be run in case we need to update to latest available
+          Python base image. This should be a rare and manually triggered event. Also this flag
+          is used in the scheduled run in CI when we rebuild all the images from the scratch
+          and run the tests to see if the latest python images do not fail our tests.
+
   Customization options:
 
   -E, --extras EXTRAS
@@ -2279,8 +2318,8 @@ This is the current syntax for  `./breeze <./breeze>`_:
                  pre-commit-hook-names provide-create-sessions providers-init-file provider-yamls
                  pydevd pydocstyle pylint pylint-tests python-no-log-warn pyupgrade
                  restrict-start_date rst-backticks setup-order setup-extra-packages shellcheck
-                 sort-in-the-wild sort-spelling-wordlist stylelint trailing-whitespace
-                 update-breeze-file update-extras update-local-yml-file update-setup-cfg-file
+                 sort-in-the-wild sort-spelling-wordlist stylelint trailing-whitespace ui-lint
+                 ui-test update-breeze-file update-extras update-local-yml-file update-setup-cfg-file
                  version-sync yamllint
 
         You can pass extra arguments including options to the pre-commit framework as
@@ -2325,7 +2364,7 @@ This is the current syntax for  `./breeze <./breeze>`_:
   --test-type TEST_TYPE
           Type of the test to run. One of:
 
-                 All,Core,Providers,API,CLI,Integration,Other,WWW,Heisentests,Postgres,MySQL,Helm
+                 All,Core,Providers,API,CLI,Integration,Other,WWW,Postgres,MySQL,Helm
 
           Default: All
 
@@ -2570,6 +2609,13 @@ This is the current syntax for  `./breeze <./breeze>`_:
           images are pulled by default only for the first time you run the
           environment, later the locally build images are used as cache.
 
+  --force-pull-base-python-image
+          Forces pulling of Python base image from DockerHub before building to
+          populate cache. This should only be run in case we need to update to latest available
+          Python base image. This should be a rare and manually triggered event. Also this flag
+          is used in the scheduled run in CI when we rebuild all the images from the scratch
+          and run the tests to see if the latest python images do not fail our tests.
+
   Customization options:
 
   -E, --extras EXTRAS
@@ -2739,7 +2785,7 @@ This is the current syntax for  `./breeze <./breeze>`_:
   --test-type TEST_TYPE
           Type of the test to run. One of:
 
-                 All,Core,Providers,API,CLI,Integration,Other,WWW,Heisentests,Postgres,MySQL,Helm
+                 All,Core,Providers,API,CLI,Integration,Other,WWW,Postgres,MySQL,Helm
 
           Default: All
 
