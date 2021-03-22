@@ -39,7 +39,8 @@ class TelegramHook(BaseHook):
     conn_type: 'http'
     password: 'TELEGRAM_TOKEN'
     host: 'chat_id' (optional)
-    Examples:
+    Examples
+
     .. code-block:: python
 
         # Create hook
